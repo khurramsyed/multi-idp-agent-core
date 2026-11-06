@@ -1,0 +1,66 @@
+name: destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type the project name (for example claims-assist) to confirm deleting everything
+        required: true
+  # Optional safety net: tear the stack down every night so a forgotten deploy never runs for long.
+  # If the aws-dev environment requires a reviewer, scheduled runs wait for approval.
+  # schedule:
+  #   - cron: "0 22 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-${{ vars.PROJECT || 'claims-assist' }}
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-1' }}
+  PROJECT: ${{ vars.PROJECT || 'claims-assist' }}
+  TF_VAR_region: ${{ vars.AWS_REGION || 'eu-west-1' }}
+  TF_VAR_project: ${{ vars.PROJECT || 'claims-assist' }}
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "0"
+
+jobs:
+  destroy:
+    if: github.event_name == 'schedule' || inputs.confirm == (vars.PROJECT || 'claims-assist')
+    runs-on: ubuntu-latest
+    environment: aws-dev
+    timeout-minutes: 90 # VPC Lambda network interfaces can take a while to release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@v5
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Use remote Terraform state
+        run: scripts/ci_remote_state.sh
+        env:
+          TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+          MODEL_ID: ${{ vars.MODEL_ID }}
+          ENABLE_TEST_USERS: ${{ vars.ENABLE_TEST_USERS }}
+
+      # destroy.sh deletes the AgentCore log groups and finishes with check_leftovers.sh,
+      # so the job fails if anything from the stack is still there.
+      - name: Destroy and check for leftovers
+        run: scripts/destroy.sh -auto-approve

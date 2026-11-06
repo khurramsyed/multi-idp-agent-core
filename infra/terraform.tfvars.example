@@ -1,0 +1,25 @@
+# Copy to terraform.tfvars and adjust. image_tag is set by scripts/deploy.sh.
+
+region  = "eu-west-1"
+project = "claims-assist"
+
+# Any Bedrock model or inference profile you have enabled in this Region.
+model_id = "eu.anthropic.claude-sonnet-4-5-20250929-v1:0"
+
+# Admin-created test users let you try everything without real identity providers.
+enable_test_users = true
+
+# Optional: connect real OIDC identity providers. Leave the issuer empty to skip.
+# workforce_oidc_issuer        = "https://login.workforce.example.com"
+# workforce_oidc_client_id     = "..."
+# workforce_oidc_client_secret = "..."   # better: export TF_VAR_workforce_oidc_client_secret
+# workforce_groups_claim       = "groups"
+# workforce_region_claim       = "office_region"
+
+# broker_oidc_issuer        = "https://id.brokers.example.com"
+# broker_oidc_client_id     = "..."
+# broker_oidc_client_secret = "..."      # better: export TF_VAR_broker_oidc_client_secret
+# broker_agency_claim       = "agency"
+
+# callback_urls = ["https://assistant.example.com/callback"]
+# logout_urls   = ["https://assistant.example.com/"]

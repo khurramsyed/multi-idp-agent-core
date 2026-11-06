@@ -1,0 +1,8 @@
+.git
+.venv
+build/
+infra/
+bootstrap/
+docs/
+tests/
+**/__pycache__

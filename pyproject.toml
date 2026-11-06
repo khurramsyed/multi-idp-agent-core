@@ -1,0 +1,42 @@
+[project]
+name = "claims-assist-agentcore"
+version = "0.1.0"
+description = "Claims Assist on Amazon Bedrock AgentCore"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+# One group per deployable (image, Lambda, script set). `dev` is installed by default
+# by `uv sync` and pulls in everything the tests import.
+[dependency-groups]
+dev = [
+    { include-group = "services" },
+    "pytest==8.3.4",
+    "httpx==0.28.1",
+    "boto3>=1.35",
+    "cedarpy==4.12.2",
+]
+scripts = ["boto3>=1.35"]
+services = [
+    "fastapi==0.115.6",
+    "uvicorn==0.34.0",
+    "PyJWT[crypto]==2.10.1",
+]
+agent = [
+    "bedrock-agentcore==1.24.1",
+    "strands-agents==1.61.1",
+    "mcp==2.1.1",
+]
+interceptor = ["PyJWT[crypto]==2.10.1"]
+
+[tool.uv]
+package = false
+# The agent image pins newer fastapi/uvicorn (via bedrock-agentcore) than the mock APIs.
+# Declaring the groups as conflicting lets uv resolve each independently in one lockfile.
+conflicts = [
+    [{ group = "agent" }, { group = "dev" }],
+    [{ group = "agent" }, { group = "services" }],
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

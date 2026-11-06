@@ -1,0 +1,61 @@
+{
+  "ClaimsAssist": {
+    "commonTypes": {
+      "TokenContext": {
+        "type": "Record",
+        "attributes": {
+          "token": {
+            "type": "Record",
+            "attributes": {
+              "population": { "type": "String" },
+              "agency_id": { "type": "String" },
+              "role": { "type": "String" },
+              "region": { "type": "String" }
+            }
+          }
+        }
+      }
+    },
+    "entityTypes": {
+      "User": {
+        "shape": { "type": "Record", "attributes": {} }
+      },
+      "Claim": {
+        "shape": {
+          "type": "Record",
+          "attributes": {
+            "agencyId": { "type": "String" },
+            "region": { "type": "String" },
+            "policyId": { "type": "String" },
+            "underInvestigation": { "type": "Boolean" }
+          }
+        }
+      },
+      "Policy": {
+        "shape": {
+          "type": "Record",
+          "attributes": {
+            "agencyId": { "type": "String" },
+            "region": { "type": "String" }
+          }
+        }
+      }
+    },
+    "actions": {
+      "ReadClaim": {
+        "appliesTo": {
+          "principalTypes": ["User"],
+          "resourceTypes": ["Claim"],
+          "context": { "type": "TokenContext" }
+        }
+      },
+      "ReadPolicy": {
+        "appliesTo": {
+          "principalTypes": ["User"],
+          "resourceTypes": ["Policy"],
+          "context": { "type": "TokenContext" }
+        }
+      }
+    }
+  }
+}

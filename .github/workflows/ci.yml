@@ -1,0 +1,48 @@
+name: ci
+
+# Runs on every push and pull request, and is reused by the deploy workflow as its gate.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - name: Unit and Cedar policy tests
+        run: uv run pytest -q
+      - name: Lint shell scripts
+        run: shellcheck scripts/*.sh
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@v5
+      - run: scripts/build_lambdas.sh
+      - run: terraform fmt -check -recursive
+      - name: Validate main stack
+        run: |
+          terraform -chdir=infra init -backend=false
+          terraform -chdir=infra validate
+      - name: Validate bootstrap
+        run: |
+          terraform -chdir=bootstrap init -backend=false
+          terraform -chdir=bootstrap validate

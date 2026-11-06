@@ -1,0 +1,94 @@
+name: deploy
+
+# Manual by default, because every deploy starts billable resources.
+on:
+  workflow_dispatch:
+    inputs:
+      run_smoke_test:
+        description: Create the test users and run the authorization smoke test after deploying
+        type: boolean
+        default: true
+  # Uncomment to deploy on every push to main:
+  # push:
+  #   branches: [main]
+
+permissions:
+  contents: read
+
+# One Terraform run at a time against the shared state (deploy and destroy share this group).
+concurrency:
+  group: terraform-${{ vars.PROJECT || 'claims-assist' }}
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-1' }}
+  PROJECT: ${{ vars.PROJECT || 'claims-assist' }}
+  TF_VAR_region: ${{ vars.AWS_REGION || 'eu-west-1' }}
+  TF_VAR_project: ${{ vars.PROJECT || 'claims-assist' }}
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "0"
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: aws-dev
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write # OIDC: short-lived AWS credentials, no stored keys
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@v5
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false # the scripts read `terraform output -raw`
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Images are linux/arm64. QEMU lets the x86 runner build them.
+      - uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Use remote Terraform state
+        run: scripts/ci_remote_state.sh
+        env:
+          TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+          MODEL_ID: ${{ vars.MODEL_ID }}
+          ENABLE_TEST_USERS: ${{ vars.ENABLE_TEST_USERS }}
+
+      - name: Build, push and apply
+        run: scripts/deploy.sh -auto-approve
+
+      - name: Authorization smoke test
+        if: (github.event_name == 'push' || inputs.run_smoke_test) && vars.ENABLE_TEST_USERS != 'false'
+        env:
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+        run: |
+          uv sync --frozen --only-group scripts
+          source .venv/bin/activate
+          scripts/create_test_users.sh
+          python scripts/smoke_test.py
+
+      - name: Summary
+        if: success()
+        run: |
+          {
+            echo "### Deployed \`${PROJECT}\` to ${AWS_REGION}"
+            echo
+            echo "Remember to run the **destroy** workflow when you are finished; the NAT gateway, ALB and Fargate tasks bill by the hour."
+          } >> "$GITHUB_STEP_SUMMARY"

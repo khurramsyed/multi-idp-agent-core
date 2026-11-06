@@ -1,0 +1,46 @@
+[
+  {
+    "policy_id": "POL-2001",
+    "agency_id": "AG-100",
+    "region": "north",
+    "insured": "Harbourline Storage Ltd (fictional)",
+    "product": "Commercial property",
+    "status": "IN_FORCE",
+    "period": {"start": "2026-01-01", "end": "2026-12-31"},
+    "cover": ["buildings", "stock", "business interruption"],
+    "key_conditions": "Flood cover applies subject to the flood excess. Stock must be stored at least 10 cm above floor level."
+  },
+  {
+    "policy_id": "POL-2002",
+    "agency_id": "AG-200",
+    "region": "south",
+    "insured": "Quayside Couriers Ltd (fictional)",
+    "product": "Commercial motor and public liability",
+    "status": "IN_FORCE",
+    "period": {"start": "2026-04-01", "end": "2027-03-31"},
+    "cover": ["vehicles", "public liability"],
+    "key_conditions": "Vehicles left overnight must be locked with keys removed. Theft claims require a police crime reference."
+  },
+  {
+    "policy_id": "POL-2003",
+    "agency_id": "AG-100",
+    "region": "south",
+    "insured": "Meadowgate Retail Ltd (fictional)",
+    "product": "Retail combined",
+    "status": "IN_FORCE",
+    "period": {"start": "2026-02-01", "end": "2027-01-31"},
+    "cover": ["contents", "stock", "business interruption"],
+    "key_conditions": "An intruder alarm must be set when the premises are unattended."
+  },
+  {
+    "policy_id": "POL-2004",
+    "agency_id": "AG-200",
+    "region": "north",
+    "insured": "Fernbridge Design Studio Ltd (fictional)",
+    "product": "Office package",
+    "status": "IN_FORCE",
+    "period": {"start": "2026-06-01", "end": "2027-05-31"},
+    "cover": ["buildings", "contents", "computer equipment"],
+    "key_conditions": "Escape of water excess applies. Unoccupied periods over 30 days must be notified."
+  }
+]

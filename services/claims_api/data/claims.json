@@ -1,0 +1,80 @@
+[
+  {
+    "claim_id": "CLM-1001",
+    "policy_id": "POL-2001",
+    "agency_id": "AG-100",
+    "region": "north",
+    "status": "OPEN",
+    "loss_type": "flood",
+    "loss_date": "2026-09-14",
+    "under_investigation": false,
+    "summary": "River flooding entered the ground floor of the insured's warehouse. Stock on lower racking damaged; building drying under way.",
+    "investigator_notes": "Site visit completed. Moisture readings recorded. Awaiting contractor estimate for drying and racking replacement.",
+    "next_steps": "Obtain contractor estimate; confirm stock valuation with the policyholder."
+  },
+  {
+    "claim_id": "CLM-1002",
+    "policy_id": "POL-2001",
+    "agency_id": "AG-100",
+    "region": "north",
+    "status": "SETTLED",
+    "loss_type": "fire",
+    "loss_date": "2026-03-02",
+    "under_investigation": false,
+    "summary": "Small electrical fire in the staff kitchen. Limited smoke damage.",
+    "investigator_notes": "Cause confirmed as a faulty appliance. Repairs completed.",
+    "next_steps": "None. Claim closed."
+  },
+  {
+    "claim_id": "CLM-1003",
+    "policy_id": "POL-2002",
+    "agency_id": "AG-200",
+    "region": "south",
+    "status": "OPEN",
+    "loss_type": "theft",
+    "loss_date": "2026-08-30",
+    "under_investigation": false,
+    "summary": "Delivery van stolen from the insured's yard overnight. Police report filed.",
+    "investigator_notes": "Vehicle not yet recovered. CCTV requested from neighbouring premises.",
+    "next_steps": "Wait 28 days for recovery before agreeing a total-loss settlement."
+  },
+  {
+    "claim_id": "CLM-1004",
+    "policy_id": "POL-2003",
+    "agency_id": "AG-100",
+    "region": "south",
+    "status": "UNDER_REVIEW",
+    "loss_type": "fire",
+    "loss_date": "2026-09-01",
+    "under_investigation": true,
+    "summary": "Overnight fire at a retail unit. Significant stock and fit-out loss reported.",
+    "investigator_notes": "Referred to the fraud team: inconsistencies between the stock records and the reported loss.",
+    "next_steps": "Fraud team review in progress. Do not discuss with third parties."
+  },
+  {
+    "claim_id": "CLM-1005",
+    "policy_id": "POL-2004",
+    "agency_id": "AG-200",
+    "region": "north",
+    "status": "OPEN",
+    "loss_type": "escape_of_water",
+    "loss_date": "2026-10-03",
+    "under_investigation": false,
+    "summary": "Burst pipe in the first-floor office ceiling. Water damage to two rooms and IT equipment.",
+    "investigator_notes": "Plumber's report received. IT equipment inventory requested.",
+    "next_steps": "Review the IT inventory and agree the replacement basis."
+  },
+  {
+    "claim_id": "CLM-1006",
+    "policy_id": "POL-2002",
+    "agency_id": "AG-200",
+    "region": "south",
+    "status": "UNDER_REVIEW",
+    "loss_type": "liability",
+    "loss_date": "2026-07-19",
+    "under_investigation": true,
+    "summary": "Third-party injury claim from a visitor at the insured's yard.",
+    "investigator_notes": "Referred to the fraud team: the same claimant appears in two unrelated claims.",
+    "next_steps": "Fraud team review in progress."
+  }
+]
