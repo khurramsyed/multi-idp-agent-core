@@ -292,4 +292,4 @@ tests/                 Unit tests, including Cedar policy tests
 
 ## Licence
 
-Add the licence of your choice before publishing (for example MIT-0, which AWS samples commonly use).
+MIT License.
